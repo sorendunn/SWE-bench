@@ -281,7 +281,7 @@ class TestbedContextManager:
 
                     # Install dependencies
                     path_to_reqs = get_requirements(setup_ref_instance, self.testbed)
-                    cmd = f"source {path_activate} {env_name} && echo 'activate successful' && pip install -r {path_to_reqs}"
+                    cmd = f"bash -c 'source {path_activate} {env_name} && echo \'activate successful\' && pip install -r {path_to_reqs}'"
                     logger_testbed.info(
                         f"[Testbed] Installing dependencies for {env_name}; Command: {cmd}"
                     )
@@ -326,7 +326,7 @@ class TestbedContextManager:
 
                 # Install additional packages if specified
                 if "pip_packages" in install:
-                    cmd = f"source {path_activate} {env_name} && pip install {install['pip_packages']}"
+                    cmd = f"bash -c 'source {path_activate} {env_name} && pip install {install['pip_packages']}'"
                     logger_testbed.info(
                         f"[Testbed] Installing pip packages for {env_name}; Command: {cmd}"
                     )
@@ -424,7 +424,7 @@ class TaskEnvContextManager:
             self.log_file = os.path.join(
                 log_dir, f"{instance[KEY_INSTANCE_ID]}.{instance[KEY_MODEL]}.eval.log"
             )
-        self.cmd_activate = f"source {os.path.join(self.conda_path, 'bin', 'activate')} {self.venv} && echo 'activate successful'"
+        self.cmd_activate = f"source {os.path.join(self.conda_path, 'bin', 'activate')} {self.venv} && echo \'activate successful\'"
         self.timeout = timeout
         self.cwd = os.getcwd()
 
@@ -506,7 +506,7 @@ class TaskEnvContextManager:
         # Run pre-install set up if provided
         if "pre_install" in specifications:
             for pre_install in specifications["pre_install"]:
-                cmd_pre_install = f"{self.cmd_activate} && {pre_install}"
+                cmd_pre_install = f"bash -c '{self.cmd_activate} && {pre_install}'"
                 logger_taskenv.info(
                     f"[{self.testbed_name}] [{instance[KEY_INSTANCE_ID]}] Running pre-install setup command: {cmd_pre_install}"
                 )
@@ -529,7 +529,7 @@ class TaskEnvContextManager:
         if "install" not in specifications:
             return True
 
-        cmd_install = f"{self.cmd_activate} && {specifications['install']}"
+        cmd_install = f"bash -c '{self.cmd_activate} && {specifications['install']}'"
         logger_taskenv.info(
             f"[{self.testbed_name}] [{instance[KEY_INSTANCE_ID]}] Installing with command: {cmd_install}"
         )
@@ -635,7 +635,7 @@ class TaskEnvContextManager:
         """
         try:
             # Run test command for task instance
-            test_cmd = f"{self.cmd_activate} && {instance['test_cmd']}"
+            test_cmd = f"bash -c '{self.cmd_activate} && {instance['test_cmd']}'"
             with open(self.log_file, "a") as f:
                 f.write(f"Test Script: {test_cmd};\n")
             out_test = self.exec(test_cmd, shell=True, timeout=self.timeout, check=False)
