@@ -400,11 +400,11 @@ def main(
                 existing_ids.add(instance_id)
     logger.info(f"Read {len(existing_ids)} already completed ids from {output_file}")
     if Path(dataset_name_or_path).exists():
-        dataset = load_from_disk(dataset_name_or_path)
+        dataset = load_dataset('json', data_files = dataset_name_or_path)
     else:
         dataset = load_dataset(dataset_name_or_path)
-    if not split in dataset:
-        raise ValueError(f"Invalid split {split} for dataset {dataset_name_or_path}")
+    # if not split in dataset:
+    #     raise ValueError(f"Invalid split {split} for dataset {dataset_name_or_path}")
     dataset = dataset[split]
     lens = np.array(list(map(len, dataset["text"])))
     dataset = dataset.select(np.argsort(lens))
