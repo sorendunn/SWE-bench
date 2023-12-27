@@ -8,7 +8,3 @@ sudo apt install unzip
 cd SWE-bench
 mkdir log_dir
 mkdir testbed
-unzip swe-bench.zip
-reset
-conda env create -f environment.yml
-conda activate swe-bench
